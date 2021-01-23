@@ -69,7 +69,7 @@ function setup() {
   canvas.position(width * 0.043, width * 0.005);
 
   slider = createSlider(1, 10, 5);
-  slider.position(height * 0.98, height * 0.95);
+  slider.position((width * 0.9) / 2, height * 0.95);
 
   process_drawing();
 
