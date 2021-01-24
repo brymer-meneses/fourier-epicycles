@@ -56,10 +56,10 @@ function setup() {
   let canvas = createCanvas(width * 0.92, height * 0.92);
   canvas.position(width * 0.043, width * 0.005);
 
-  slider = createSlider(1, 10, 5);
+  slider = createSlider(1, 10, 1);
   slider.position((width * 0.91) / 2, height * 0.95);
   slider.input(updateScreen);
-  radius_sf = slider.value() * (1 / 10);
+  radius_sf = slider.value();
 
   switch_button = createButton("switch mode");
   switch_button.position((width * 0.75) / 2, height * 0.95);
@@ -75,7 +75,7 @@ function switchMode() {
 }
 
 function updateScreen() {
-  radius_sf = slider.value() * (1 / 10);
+  radius_sf = slider.value() 
   recentlyUpdated = true;
   time = TWO_PI + 0.05;
 }
