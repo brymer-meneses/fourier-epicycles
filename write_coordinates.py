@@ -9,17 +9,19 @@ if len(files) > 1:
     print('Error: Make sure there is only one file in the directory "drawing_csv"')
     exit()
 
-file_path = path.join(dir_name, files[0])
-df = pd.read_csv(file_path)
+csv_file_path = path.join(dir_name, files[0])
+df = pd.read_csv(csv_file_path)
 
-if path.exists('src/drawing.js'):
+write_file_path = 'src/drawing.js'
+
+if path.exists(write_file_path):
     print('There is already a vector path that is generated.')
 
     decision = input('Overwrite the file? (y/n): ')
 
     if decision.lower() == "y":
         # Empties the content of the file
-        open(file_path, 'w').close()
+        open(write_file_path, 'w').close()
 
     elif decision.lower() == "n":
         print('quitting...')
@@ -27,7 +29,7 @@ if path.exists('src/drawing.js'):
 
 print('Processing coordinates...')
 
-writeFile = open(file_path, 'w')
+writeFile = open(write_file_path, 'w')
 writeFile.writelines("let drawing = [\n")
 toWrite = []
 

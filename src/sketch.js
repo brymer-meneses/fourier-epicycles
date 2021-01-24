@@ -8,8 +8,6 @@ const height =
   document.body.clientHeight;
 
 // ============== Settings ===============
-let radius_sf;
-const wave_length = 1000;
 const gradient_reset = 500;
 const x_pos = 100;
 const y_pos = 300;
@@ -19,43 +17,62 @@ const color2 = [100, 179, 244];
 
 // =======================================
 
-let time = 0;
+let radius_sf;
+
 let x = [];
 let y = [];
+let z = [];
 let slider;
 let btn;
 let recentlyUpdated = false;
 let path = [];
 
+// for two-epicycle mode
 let fourierY;
 let fourierX;
+// for one-epicycle mode
+let fourierComplex;
 
-function process_drawing() {
-  for (let i = 0; i < drawing.length; i++) {
-    x.push(drawing[i].x);
-    y.push(drawing[i].y);
+function process_drawing(isComplex) {
+  if (!isComplex) {
+    for (let i = 0; i < drawing.length; i++) {
+      x.push(drawing[i].x);
+      y.push(drawing[i].y);
+    }
+    fourierY = dft(y);
+    fourierX = dft(x);
+    fourierX.sort((a, b) => b.amp - a.amp);
+    fourierY.sort((a, b) => b.amp - a.amp);
+  } else {
+    for (let i = 0; i < drawing.length; i++) {
+      const c = new Complex(drawing[i].x, drawing[i].y);
+      z.push(c);
+    }
+    fourierComplex = dft_complex(z);
+    fourierComplex.sort((a, b) => b.amp - a.amp);
   }
 }
 
 function setup() {
-  const windowWidth = width * 0.92;
-  const windowHeight = height * 0.92;
-  let canvas = createCanvas(windowWidth, windowHeight);
+  let canvas = createCanvas(width * 0.92, height * 0.92);
   canvas.position(width * 0.043, width * 0.005);
 
   slider = createSlider(1, 10, 5);
-  slider.position((width * 0.9) / 2, height * 0.95);
-
-  process_drawing();
-
-  fourierY = dft(y);
-  fourierX = dft(x);
-
-  fourierX.sort((a, b) => b.amp - a.amp);
-  fourierY.sort((a, b) => b.amp - a.amp);
+  slider.position((width * 0.91) / 2, height * 0.95);
+  slider.input(updateScreen);
   radius_sf = slider.value() * (1 / 10);
 
-  slider.input(updateScreen);
+  switch_button = createButton("switch mode");
+  switch_button.position((width * 0.75) / 2, height * 0.95);
+  switch_button.mousePressed(switchMode);
+
+  process_drawing((isComplex = true));
+  process_drawing((isComplex = false));
+}
+
+function switchMode() {
+  mode = mode * -1;
+  time = TWO_PI + 0.05;
 }
 
 function updateScreen() {
@@ -64,68 +81,9 @@ function updateScreen() {
   time = TWO_PI + 0.05;
 }
 
-function draw_epicycle(x, y, fourier, radius_sf, rotation) {
-  for (let i = 0; i < fourier.length; i++) {
-    const prevx = x;
-    const prevy = y;
-
-    const freq = fourier[i].freq;
-    const radius = radius_sf * fourier[i].amp;
-    const phase = fourier[i].phase;
-
-    strokeWeight(1);
-    stroke(255, 80);
-    noFill();
-    circle(prevx, prevy, radius * 2);
-
-    x += radius * cos(freq * time + phase + rotation);
-    y += radius * sin(freq * time + phase + rotation);
-
-    fill(255);
-    stroke(255);
-    line(prevx, prevy, x, y);
-  }
-
-  return createVector(x, y);
-}
-
-function draw_path(path) {
-  beginShape();
-  noFill();
-  strokeWeight(2);
-  stroke(lerpColor(color(color1), color(color2), gradient(gradient_reset)));
-  for (let i = 0; i < path.length; i++) {
-    vertex(path[i].x, path[i].y);
-  }
-  endShape();
-}
-
 function draw() {
   background(0);
 
-  let vx = draw_epicycle(width * 0.4, width * 0.05, fourierX, radius_sf, 0);
-  let vy = draw_epicycle(
-    width * 0.05,
-    width * 0.2,
-    fourierY,
-    radius_sf,
-    HALF_PI
-  );
-
-  let v = createVector(vx.x, vy.y);
-  path.unshift(v);
-
-  draw_path(path);
-
-  stroke(255);
-  line(vx.x, vx.y, v.x, v.y);
-  line(vy.x, vy.y, v.x, v.y);
-
-  const dt = TWO_PI / fourierY.length;
-  time += dt;
-
-  if (time > TWO_PI) {
-    time = 0;
-    path = [];
-  }
+  // modes.js
+  mode === -1 ? two_epicycles() : complex();
 }
