@@ -4,10 +4,10 @@
 let mode = 1;
 
 function two_epicycles() {
-  let vx = draw_epicycle(width * 0.4, width * 0.05, fourierX, radius_sf, 0);
+  let vx = draw_epicycle(width / 2, height * 0.05, fourierX, radius_sf, 0);
   let vy = draw_epicycle(
     width * 0.05,
-    width * 0.2,
+    height / 2,
     fourierY,
     radius_sf,
     HALF_PI

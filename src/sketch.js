@@ -24,7 +24,6 @@ let y = [];
 let z = [];
 let slider;
 let btn;
-let recentlyUpdated = false;
 let path = [];
 
 // for two-epicycle mode
