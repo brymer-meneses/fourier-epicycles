@@ -75,7 +75,7 @@ function switchMode() {
 }
 
 function updateScreen() {
-  radius_sf = slider.value() 
+  radius_sf = slider.value();
   recentlyUpdated = true;
   time = TWO_PI + 0.05;
 }
