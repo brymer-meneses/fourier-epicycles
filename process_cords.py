@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
 from os import path, listdir
-from tqdm import tqdm
 
 
 def get_CoM(df):
@@ -18,6 +17,7 @@ files = listdir(dir_name)
 
 # <============================ FILE CHECKING ======================================>
 file_dir = None
+df = None
 if len(files) > 1:
 
     print("\nThere are many files in the directory: drawing_csv!")
@@ -37,16 +37,20 @@ if len(files) > 1:
             print("Quitting...")
         else:
             print(f"\t- Chosen File: {file}")
+            df = pd.read_csv(file_dir)
             break
 
-
-df = pd.read_csv(file_dir)
+elif len(files) == 1:
+    file_path = path.join(dir_name, files[0])
+    print(f"\nChosen File: {files[0]}")
+    df = pd.read_csv(file_path)
 
 
 # <============================ FILE CHECKING ======================================>
 
 # <======================== COORDINATE TRANSLATION =================================>
-translate = input('\nDo you want to translate the coordinates (y/n): ')
+translate = input(
+    '\nDo you want to translate the coordinates to the origin? (y/n): ')
 
 if translate.lower() == "y":
     CoM = get_CoM(df)
@@ -70,11 +74,16 @@ elif translate.lower() == "n":
     processed_df = df
 # <======================== COORDINATE TRANSLATION =================================>
 
+# <======================== COORDINATE WRITING =================================>
 
-write_file_path = 'src/drawing.js'
+print("\nPlease enter the name of the file you're going to save the coordinates.")
+file_name = input("File Name: ")
+write_file_path = path.join('paths', file_name)
+
+print(f'\t- Writing the coordinates to {write_file_path}.')
 
 if path.exists(write_file_path):
-    print('\nThere is already a vector path that is generated.')
+    print(f'\nThere is already a file : {write_file_path}')
 
     decision = input('Overwrite the file? (y/n): ')
 
@@ -87,9 +96,7 @@ if path.exists(write_file_path):
         print('\t- Quitting...')
         exit()
 
-print('\t- Writing the coordinates...')
 writeFile = open(write_file_path, 'w')
-
 writeFile.writelines("let drawing = [\n")
 
 for index, row in processed_df.iterrows():
@@ -98,6 +105,10 @@ for index, row in processed_df.iterrows():
     writeFile.writelines(line)
 writeFile.writelines("]\n")
 
+writeFile.close()
+
 print('\t- Success!')
 
 print("Path is ready to be displayed.")
+
+# <======================== COORDINATE WRITING =================================>

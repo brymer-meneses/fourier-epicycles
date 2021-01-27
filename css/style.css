@@ -1,0 +1,30 @@
+body {
+  background-color: #171717;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+canvas {
+  margin: auto;
+}
+
+button {
+  /* display: flex; */
+  font-family: "Poppins", sans-serif;
+  border-color: none;
+  border-radius: 2rem;
+  background-image: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+  margin: 0 -4rem;
+  outline: none;
+  font-weight: 400;
+}
+
+button:hover {
+  cursor: pointer;
+  background-image: none;
+}
+@media only screen and (max-width: 1000px) {
+  button {
+    margin: 0 -6rem;
+  }
+}

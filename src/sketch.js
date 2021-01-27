@@ -53,16 +53,18 @@ function process_drawing(isComplex) {
 }
 
 function setup() {
-  let canvas = createCanvas(width * 0.92, height * 0.92);
-  canvas.position(width * 0.043, width * 0.005);
+  let canvas = createCanvas(width, height * 0.94);
+  canvas.position(width * 0.000001, width * 0.000001);
 
   slider = createSlider(1, 10, 1);
-  slider.position((width * 0.91) / 2, height * 0.95);
+  slider.position((width * 0.9) / 2, height * 0.95);
   slider.input(updateScreen);
+
   radius_sf = slider.value();
 
   switch_button = createButton("switch mode");
-  switch_button.position((width * 0.75) / 2, height * 0.95);
+  switch_button.position((width * 0.8) / 2, height * 0.95);
+
   switch_button.mousePressed(switchMode);
 
   process_drawing((isComplex = true));
